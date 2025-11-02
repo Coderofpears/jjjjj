@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Credit Store</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f6f8fa;
+      color: #333;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .credits {
+      background: #e0ffe0;
+      padding: 0.5rem 1rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      color: #2a7b2a;
+    }
+    .store {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    .item {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+      padding: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .item:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    }
+    .item img {
+      width: 100%;
+      border-radius: 0.5rem;
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+    }
+    .item h3 {
+      margin: 0.5rem 0 0;
+      font-size: 1.1rem;
+    }
+    .item p {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0.3rem 0 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Credit Store 🪙</h1>
+    <div class="credits" id="credits"></div>
+  </header>
+
+  <div class="store" id="store"></div>
+
+  <script>
+    // Example JSON data (could also be loaded via fetch)
+    const items = [
+      { id: "item1", name: "Cyber Hoodie", cost: 450, image: "https://picsum.photos/200?1" },
+      { id: "item2", name: "Neon Sneakers", cost: 800, image: "https://picsum.photos/200?2" },
+      { id: "item3", name: "Futurist Watch", cost: 1200, image: "https://picsum.photos/200?3" },
+    ];
+
+    const params = new URLSearchParams(window.location.search);
+    let creditAmount = parseInt(params.get("creditamount")) || 0;
+
+    const creditsEl = document.getElementById("credits");
+    const storeEl = document.getElementById("store");
+
+    function updateCreditsDisplay() {
+      creditsEl.textContent = `Credits: ${creditAmount}`;
+    }
+
+    function loadStore() {
+      storeEl.innerHTML = "";
+      items.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <h3>${item.name}</h3>
+          <p>${item.cost} credits</p>
+        `;
+        div.addEventListener("click", () => {
+          const newParams = new URLSearchParams(window.location.search);
+          newParams.set("item", item.id);
+          newParams.set("cost", item.cost);
+          window.history.replaceState({}, "", `${window.location.pathname}?${newParams}`);
+          alert(`Selected: ${item.name} (Cost: ${item.cost} credits)`);
+        });
+        storeEl.appendChild(div);
+      });
+    }
+
+    updateCreditsDisplay();
+    loadStore();
+  </script>
+</body>
+</html>
